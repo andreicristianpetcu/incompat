@@ -1,40 +1,44 @@
-browser.runtime.onInstalled.addListener((details) => {
-  console.log('previousVersion', details.previousVersion)
-})
-
-browser.tabs.onUpdated.addListener(async (tabId) => {
-  browser.pageAction.show(tabId)
-})
+const siteCache = [];
 
 function getIssuesPage(domain) {
   return `https://github.com/webcompat/web-bugs/issues?q=is%3Aissue+in%3Atitle+${domain}+is%3Aopen`;
 }
 
 async function getIssuesForSite(site){
-  const issuesPage = getIssuesPage(site);
-  const response = await fetch(issuesPage);
-  const text = await response.text();
-  var el = document.createElement('html');
-  el.innerHTML = text;
-  const issues = el.querySelectorAll("a[data-hovercard-type=\"issue\"]");
-  return {
-    site,
-    issuesCount: issues.length,
-    page: issuesPage
-  };
+  if(!siteCache[site]) {
+    const issuesPage = getIssuesPage(site);
+    const response = await fetch(issuesPage);
+    const text = await response.text();
+    var el = document.createElement('html');
+    el.innerHTML = text;
+    const issues = el.querySelectorAll("a[data-hovercard-type=\"issue\"]");
+    siteCache[site] = {
+      site,
+      issuesCount: issues.length,
+      page: issuesPage
+    };
+  }
+  return siteCache[site];
+}
+
+async function refreshDataForDomain(domain, tabId){
+  const data = await getIssuesForSite(domain);
+  if(data.issuesCount > 0) {
+    let issueCount = "infinity";
+    if(data.issuesCount <= 9){
+      issueCount = data.issuesCount;
+    }
+    browser.pageAction.setIcon({
+      tabId: tabId,
+      path: `images/count/${issueCount}.png`
+    });
+    browser.pageAction.show(tabId);
+  }
 }
 
 async function onComplete(params){
   const currentHost = new URL(params.url).host
-  const data = await getIssuesForSite(currentHost);
-  if(data.issuesCount > 0) {
-    browser.pageAction.setIcon({
-      tabId: params.tabId, path: `images/count/${data.issuesCount}.png`
-    });
-    browser.pageAction.show(params.tabId);
-  } else {
-    browser.pageAction.hide(params.tabId);
-  }
+  refreshDataForDomain(currentHost, params.tabId);
 }
 
 browser.webNavigation.onCompleted.addListener(onComplete,
@@ -47,3 +51,8 @@ browser.pageAction.onClicked.addListener((tab) => {
     url: issuesPage
   });
 });
+
+// browser.tabs.onUpdated.addListener(async (tabId) => {
+//   const tabInfo = await browser.tabs.get(tabId)
+//   refreshDataForDomain(new URL(tabInfo.url).host, tabInfo.tabId);
+// })

@@ -6,11 +6,22 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
   browser.pageAction.show(tabId)
 })
 
-console.log(`'Allo 'Allo! Event Page for Page Action`)
+async function getIssuesForSite(site){
+  const issuesPage = `https://github.com/webcompat/web-bugs/issues?q=is%3Aissue+in%3Atitle+${site}+is%3Aopen`;
+  const response = await fetch(issuesPage);
+  const text = await response.text();
+  var el = document.createElement('html');
+  el.innerHTML = text;
+  const issues = el.querySelectorAll("a[data-hovercard-type=\"issue\"]");
+  return {
+    site,
+    issuesCount: issues.length,
+    page: `https://github.com/webcompat/web-bugs/issues?q=is%3Aissue+in%3Atitle+${site}+is%3Aopen`
+  };
+}
 
-async function getIssues(){
-  const response = await fetch('https://api.github.com/repos/webcompat/web-bugs/issues?utf8=%E2%9C%93&q=is%3Aissue+%27youtube.com%27+in%3Atitle+is%3Aopen+')
-  let data = await response.json();
+async function init(){
+  const data = await getIssuesForSite('www.decathlon.ro');
   console.log(data);
 }
-getIssues();
+init();

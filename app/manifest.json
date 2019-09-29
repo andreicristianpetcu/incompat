@@ -24,6 +24,6 @@
   },
   "permissions": [
     "activeTab",
-    "https://api.github.com/"
+    "https://github.com/"
   ]
 }

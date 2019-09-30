@@ -51,8 +51,3 @@ browser.pageAction.onClicked.addListener((tab) => {
     url: issuesPage
   });
 });
-
-// browser.tabs.onUpdated.addListener(async (tabId) => {
-//   const tabInfo = await browser.tabs.get(tabId)
-//   refreshDataForDomain(new URL(tabInfo.url).host, tabInfo.tabId);
-// })

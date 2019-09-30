@@ -27,3 +27,7 @@ The build tool also defines a variable named `process.env.NODE_ENV` in your scri
 ## Docs
 
 * [webextension-toolbox](https://github.com/HaNdTriX/webextension-toolbox)
+
+## The icon
+The icon is based on incompatible by Razmik Badalyan from the Noun Project
+https://thenounproject.com/search/?q=incompatible&i=1034484

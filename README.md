@@ -1,4 +1,4 @@
-# incompat
+# Incompat
 
 Incompat is a companion for Webcompat.com. It helps track compatibility bugs for sites that you build or use every day.
 

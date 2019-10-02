@@ -1,8 +1,8 @@
 # Incompat
 
-Incompat is a companion for [webcompat.com](https://ebcompat.com). It helps track compatibility bugs for sites that you build or use every day.
+Incompat is a companion for [webcompat.com](https://webcompat.com). It helps track compatibility bugs for sites that you build or use every day.
 
-If you want to see web compatibility bugs on sites you build or use, just install this extension and it will pull data from [webcompat.com](https://ebcompat.com) and make it visible to you in the URL bar after pages load.
+If you want to see web compatibility bugs on sites you build or use, just install this extension and it will pull data from [webcompat.com](https://webcompat.com) and make it visible to you in the URL bar after pages load.
 
 A web compatibility bug is a bug when a page works in one browser but not in another. It might work on a browser on desktop but have issues in the same browser on mobile.
 

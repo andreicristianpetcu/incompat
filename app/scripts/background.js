@@ -15,14 +15,16 @@ function getIssuesPage(domain) {
   return `https://github.com/webcompat/web-bugs/issues?q=${query}`;
 }
 
+const el = document.createElement('html');
+
 async function getIssuesForSite(site){
   if(!siteCache[site]) {
     const issuesPage = getIssuesPage(site);
     const response = await fetch(issuesPage);
     const text = await response.text();
-    var el = document.createElement('html');
     el.innerHTML = text;
     const issues = el.querySelectorAll("a[data-hovercard-type=\"issue\"]");
+    el.innerHTML = "";
     const siteData = {
       site,
       issuesCount: issues.length,

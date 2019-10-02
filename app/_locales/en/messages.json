@@ -1,10 +1,10 @@
 {
   "appName": {
     "message": "Incompat",
-    "description": "The name of the application"
+    "description": "Incompat is a companion for Webcompat.com. It helps track compatibility bugs for sites that you build or use every day."
   },
   "appShortName": {
-    "message": "incompat",
+    "message": "Incompat",
     "description": "The short_name (maximum of 12 characters recommended) is a short version of the app's name."
   },
   "appDescription": {
@@ -12,7 +12,7 @@
     "description": "The description of the application"
   },
   "browserActionTitle": {
-    "message": "incompat",
+    "message": "Incompat - Click to see webcompat issues on this site!",
     "description": "The title of the browser action button"
   }
 }

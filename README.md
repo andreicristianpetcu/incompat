@@ -1,6 +1,6 @@
 # incompat
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Incompat is a companion for Webcompat.com. It helps track compatibility bugs for sites that you build or use every day.
 
 ## Install
 

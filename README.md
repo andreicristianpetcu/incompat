@@ -10,7 +10,7 @@ The cause of these bugs is usually developers that use features that are not ava
 
 If you ❤️ the open web, join the community and track web compatibility 🐜! Thank you! 🌈
 
-![addons.mozilla.org](/amo.png)
+[![addons.mozilla.org](/amo.png)](https://addons.mozilla.org/en-US/firefox/addon/incompat/)
 
 ## Install
 

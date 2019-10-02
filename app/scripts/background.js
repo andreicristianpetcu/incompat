@@ -55,12 +55,12 @@ async function refreshDataForDomain(domain, tabId){
       issueCount = data.issuesCount;
     }
     icon = `images/count/${issueCount}.png`;
-    browser.pageAction.setTitle({
+    chrome.pageAction.setTitle({
       tabId: tabId,
       title: `Incompat - There are ${data.issuesCount} opened issues on ${domain}`
     });
   } else {
-    browser.pageAction.setTitle({
+    chrome.pageAction.setTitle({
       tabId: tabId,
       title: `Incompat - There no ${data.issuesCount} opened issues on ${domain}. Click to see closed issues!`
     });

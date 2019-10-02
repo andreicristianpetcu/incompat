@@ -1,13 +1,28 @@
 const siteCache = [];
 
-function getIssuesPage(domain) {
-  const prefixes = ["www.", "m.", "mobile.", "apps.", "free."];
+const prefixes = ["www.", "m.", "mobile.", "apps.", "free."];
+
+function getMinimalDomain(domain) {
   let minimalDomain = domain;
   prefixes.forEach((prefix) => {
     if(minimalDomain.indexOf(prefix) !== -1){
       minimalDomain = minimalDomain.split(prefix)[1];
     }
   });
+  return minimalDomain;
+}
+
+function getIssuesApiPage(domain){
+  let minimalDomain = getMinimalDomain(domain);
+  let query = `is%3Aissue%20is%3Aopen%20in%3Atitle%20${minimalDomain}`;
+  prefixes.forEach((prefix) => {
+    query=`${query}%20OR%20in%3Atitle%20${prefix}${minimalDomain}`
+  });
+  return `https://api.github.com/search/issues?page=1&per_page=50&stage=all&sort=created&q=${query}%20state%3Aopen%20repo%3Awebcompat%2Fweb-bugs&order=desc`;
+}
+
+function getIssuesPage(domain) {
+  let minimalDomain = getMinimalDomain(domain);
   let query = `is%3Aissue+is%3Aopen+in%3Atitle+${domain}`;
   prefixes.forEach((prefix) => {
     query=`${query}+OR+in%3Atitle+${prefix}${minimalDomain}`
@@ -15,19 +30,14 @@ function getIssuesPage(domain) {
   return `https://github.com/webcompat/web-bugs/issues?q=${query}`;
 }
 
-const el = document.createElement('html');
-
 async function getIssuesForSite(site){
   if(!siteCache[site]) {
-    const issuesPage = getIssuesPage(site);
+    const issuesPage = getIssuesApiPage(site);
     const response = await fetch(issuesPage);
-    const text = await response.text();
-    el.innerHTML = text;
-    const issues = el.querySelectorAll("a[data-hovercard-type=\"issue\"]");
-    el.innerHTML = "";
+    const issuesAsJson = await response.json();
     const siteData = {
       site,
-      issuesCount: issues.length,
+      issuesCount: issuesAsJson.total_count,
       page: issuesPage
     };
     siteCache[site] = siteData;

@@ -12,6 +12,8 @@ If you ❤️ the open web, join the community and track web compatibility 🐜!
 
 [![addons.mozilla.org](/amo.png)](https://addons.mozilla.org/en-US/firefox/addon/incompat/)
 
+[![chrome web store](/cws.png)](https://chrome.google.com/webstore/detail/fbejggjlokhbemiomjkfedfdnfimpfap/publish-accepted)
+
 ## Install
 
 	$ npm install

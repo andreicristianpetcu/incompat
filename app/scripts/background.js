@@ -23,7 +23,7 @@ function getIssuesApiPage(domain){
 
 function getIssuesPage(domain) {
   let minimalDomain = getMinimalDomain(domain);
-  let query = `is%3Aissue+is%3Aopen+in%3Atitle+${domain}`;
+  let query = `is%3Aissue+is%3Aopen+in%3Atitle+${minimalDomain}`;
   prefixes.forEach((prefix) => {
     query=`${query}+OR+in%3Atitle+${prefix}${minimalDomain}`
   });
@@ -55,6 +55,15 @@ async function refreshDataForDomain(domain, tabId){
       issueCount = data.issuesCount;
     }
     icon = `images/count/${issueCount}.png`;
+    browser.pageAction.setTitle({
+      tabId: tabId,
+      title: `Incompat - There are ${data.issuesCount} opened issues on ${domain}`
+    });
+  } else {
+    browser.pageAction.setTitle({
+      tabId: tabId,
+      title: `Incompat - There no ${data.issuesCount} opened issues on ${domain}. Click to see closed issues!`
+    });
   }
   chrome.pageAction.setIcon({
     tabId: tabId,

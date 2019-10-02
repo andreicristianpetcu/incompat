@@ -10,6 +10,8 @@ The cause of these bugs is usually developers that use features that are not ava
 
 If you ❤️ the open web, join the community and track web compatibility 🐜! Thank you! 🌈
 
+![addons.mozilla.org](/amo.png)
+
 ## Install
 
 	$ npm install

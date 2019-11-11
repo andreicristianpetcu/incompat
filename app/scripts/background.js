@@ -99,8 +99,9 @@ chrome.webNavigation.onCompleted.addListener(onComplete,
 );
 
 chrome.pageAction.onClicked.addListener(async (tab) => {
-  const issuesPage = await getIssuesPage(new URL(tab.url).host);
-  var creating = chrome.tabs.create({
+  let currentHost = await getDomainForUrl(tab.url);
+  const issuesPage = await getIssuesPage(currentHost);
+  chrome.tabs.create({
     url: issuesPage
   });
 });

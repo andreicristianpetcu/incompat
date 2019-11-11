@@ -2,7 +2,7 @@ const siteCache = [];
 
 const prefixes = ["www.", "m.", "mobile.", "apps.", "free."];
 
-function getMinimalDomain(domain) {
+async function getMinimalDomain(domain) {
   let minimalDomain = domain;
   prefixes.forEach((prefix) => {
     if(minimalDomain.indexOf(prefix) !== -1){
@@ -12,8 +12,8 @@ function getMinimalDomain(domain) {
   return minimalDomain;
 }
 
-function getIssuesApiPage(domain){
-  let minimalDomain = getMinimalDomain(domain);
+async function getIssuesApiPage(domain){
+  let minimalDomain = await getMinimalDomain(domain);
   let query = `is%3Aissue%20is%3Aopen%20in%3Atitle%20${minimalDomain}`;
   prefixes.forEach((prefix) => {
     query=`${query}%20OR%20in%3Atitle%20${prefix}${minimalDomain}`
@@ -21,8 +21,8 @@ function getIssuesApiPage(domain){
   return `https://api.github.com/search/issues?page=1&per_page=50&stage=all&sort=created&q=${query}%20state%3Aopen%20repo%3Awebcompat%2Fweb-bugs&order=desc`;
 }
 
-function getIssuesPage(domain) {
-  let minimalDomain = getMinimalDomain(domain);
+async function getIssuesPage(domain) {
+  let minimalDomain = await getMinimalDomain(domain);
   let query = `is%3Aissue+is%3Aopen+in%3Atitle+${minimalDomain}`;
   prefixes.forEach((prefix) => {
     query=`${query}+OR+in%3Atitle+${prefix}${minimalDomain}`
@@ -32,7 +32,7 @@ function getIssuesPage(domain) {
 
 async function getIssuesForSite(site){
   if(!siteCache[site]) {
-    const issuesPage = getIssuesApiPage(site);
+    const issuesPage = await getIssuesApiPage(site);
     const response = await fetch(issuesPage);
     const issuesAsJson = await response.json();
     const siteData = {
@@ -84,8 +84,8 @@ chrome.webNavigation.onCompleted.addListener(onComplete,
   { url: [{ schemes: ["http", "https", "ftp", "ftps"] }] }
 );
 
-chrome.pageAction.onClicked.addListener((tab) => {
-  const issuesPage = getIssuesPage(new URL(tab.url).host);
+chrome.pageAction.onClicked.addListener(async (tab) => {
+  const issuesPage = await getIssuesPage(new URL(tab.url).host);
   var creating = chrome.tabs.create({
     url: issuesPage
   });

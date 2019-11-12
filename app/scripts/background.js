@@ -5,7 +5,7 @@ const prefixes = ["www.", "m.", "mobile.", "apps.", "free."];
 async function getMinimalDomain(domain) {
   let minimalDomain = domain;
   prefixes.forEach((prefix) => {
-    if (minimalDomain.indexOf(prefix) !== -1) {
+    if (minimalDomain.startsWith(prefix)) {
       minimalDomain = minimalDomain.split(prefix)[1];
     }
   });
@@ -47,6 +47,7 @@ async function getIssuesForSite(site) {
 }
 
 async function refreshDataForDomain(domain, tabId) {
+  let minimalDomain = await getMinimalDomain(domain);
   const data = await getIssuesForSite(domain);
   let icon = "images/icon-16.png";
   if (data.issuesCount > 0) {
@@ -57,12 +58,12 @@ async function refreshDataForDomain(domain, tabId) {
     icon = `images/count/${issueCount}.png`;
     chrome.pageAction.setTitle({
       tabId: tabId,
-      title: `Incompat - There are ${data.issuesCount} opened issues on ${domain}`
+      title: `Incompat - There are ${data.issuesCount} opened issues on ${minimalDomain}`
     });
   } else {
     chrome.pageAction.setTitle({
       tabId: tabId,
-      title: `Incompat - There no ${data.issuesCount} opened issues on ${domain}. Click to see closed issues!`
+      title: `Incompat - There no ${data.issuesCount} opened issues on ${minimalDomain}. Click to see closed issues!`
     });
   }
   chrome.pageAction.setIcon({

@@ -4,6 +4,7 @@
   "description": "Incompat is a companion for Webcompat.com. It helps track compatibility bugs for sites that you build or use every day.",
   "scripts": {
     "dev": "./node_modules/webextension-toolbox/bin/webextension-toolbox dev firefox",
+    "watch": "./node_modules/web-ext/bin/web-ext run -s app --pref browser.ctrlTab.recentlyUsedOrder=false -u https://github.com/webcompat/web-bugs/issues/43620 -u https://github.com/webcompat/web-bugs/issues/44518 -u about:debugging#/runtime/this-firefox",
     "build": "./node_modules/webextension-toolbox/bin/webextension-toolbox build -m firefox ; ./node_modules/webextension-toolbox/bin/webextension-toolbox build -m chrome"
   },
   "devDependencies": {

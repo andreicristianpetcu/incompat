@@ -77,9 +77,12 @@ async function getDomainForUrl(url) {
   try {
     if (url.indexOf("https://github.com/webcompat/web-bugs/issues/") > -1) {
       const issueId = url.split("https://github.com/webcompat/web-bugs/issues/")[1];
-      const issueResponse = await fetch(`https://api.github.com/repos/webcompat/web-bugs/issues/${issueId}`);
-      const issue = await issueResponse.json();
-      domain = issue.title.split(" - ")[0];
+      const issueResponse = await fetch(`https://github.com/webcompat/web-bugs/issues/${issueId}`);
+      const html = await issueResponse.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const title = doc.querySelector(".gh-header-title");
+      domain = title.textContent.trim().split(" - ")[0]
     }
   } finally {
     return domain;

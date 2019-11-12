@@ -12,13 +12,19 @@ async function getMinimalDomain(domain) {
   return minimalDomain;
 }
 
-async function getIssuesApiPage(domain) {
+async function getIssues(domain, state) {
   let minimalDomain = await getMinimalDomain(domain);
   let query = `is%3Aissue%20is%3Aopen%20in%3Atitle%20${minimalDomain}`;
   prefixes.forEach((prefix) => {
     query = `${query}%20OR%20in%3Atitle%20${prefix}${minimalDomain}`
   });
-  return `https://api.github.com/search/issues?page=1&per_page=50&stage=all&sort=created&q=${query}%20state%3Aopen%20repo%3Awebcompat%2Fweb-bugs&order=desc`;
+  const issuesPage = `https://api.github.com/search/issues?page=1&per_page=50&stage=all&sort=created&q=${query}%20is%3A${state}%20repo%3Awebcompat%2Fweb-bugs&order=desc`;
+  const response = await (await fetch(issuesPage)).json();
+  const issuesCount = response.total_count;
+  return {
+    issuesCount,
+    issuesPage,
+  };
 }
 
 async function getIssuesPage(domain) {
@@ -32,13 +38,13 @@ async function getIssuesPage(domain) {
 
 async function getIssuesForSite(site) {
   if (!siteCache[site]) {
-    const issuesPage = await getIssuesApiPage(site);
-    const response = await fetch(issuesPage);
-    const issuesAsJson = await response.json();
+    const issues = await getIssues(site, 'open');
+    const closedIssuesCount = await getIssues(site, 'closed');
     const siteData = {
       site,
-      issuesCount: issuesAsJson.total_count,
-      page: issuesPage
+      openedIssuesCount: issues.issuesCount,
+      closedIssuesCount: closedIssuesCount.issuesCount,
+      page: issues.issuesPage
     };
     siteCache[site] = siteData;
     return siteData;
@@ -50,22 +56,18 @@ async function refreshDataForDomain(domain, tabId) {
   let minimalDomain = await getMinimalDomain(domain);
   const data = await getIssuesForSite(domain);
   let icon = "images/icon-16.png";
-  if (data.issuesCount > 0) {
+  const issuesCount = data.openedIssuesCount;
+  if (issuesCount > 0) {
     let issueCount = "infinity";
-    if (data.issuesCount <= 9) {
-      issueCount = data.issuesCount;
+    if (issuesCount <= 9) {
+      issueCount = issuesCount;
     }
     icon = `images/count/${issueCount}.png`;
-    chrome.pageAction.setTitle({
-      tabId: tabId,
-      title: `Incompat - There are ${data.issuesCount} opened issues on ${minimalDomain}`
-    });
-  } else {
-    chrome.pageAction.setTitle({
-      tabId: tabId,
-      title: `Incompat - There no ${data.issuesCount} opened issues on ${minimalDomain}. Click to see closed issues!`
-    });
   }
+  chrome.pageAction.setTitle({
+    tabId: tabId,
+    title: `Incompat - There are ${data.openedIssuesCount} opened issues and ${data.closedIssuesCount} closed issues on ${minimalDomain}. Click to see more.`
+  });
   chrome.pageAction.setIcon({
     tabId: tabId,
     path: icon

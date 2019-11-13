@@ -64,15 +64,19 @@ async function refreshDataForDomain(domain, tabId) {
     }
     icon = `images/count/${issueCount}.png`;
   }
-  chrome.pageAction.setTitle({
+  chrome.browserAction.setTitle({
     tabId: tabId,
     title: `Incompat - There are ${data.openedIssuesCount} opened issues and ${data.closedIssuesCount} closed issues on ${minimalDomain}. Click to see more.`
   });
-  chrome.pageAction.setIcon({
+  chrome.browserAction.setIcon({
     tabId: tabId,
     path: icon
   });
-  chrome.pageAction.show(tabId);
+  chrome.browserAction.setBadgeText({
+    tabId: tabId,
+    text: data.closedIssuesCount.toString()
+  });
+  chrome.browserAction.enable(tabId);
 }
 
 async function getDomainForUrl(url) {
@@ -104,7 +108,7 @@ chrome.webNavigation.onCompleted.addListener(onComplete,
   { url: [{ schemes: ["http", "https", "ftp", "ftps"] }] }
 );
 
-chrome.pageAction.onClicked.addListener(async (tab) => {
+chrome.browserAction.onClicked.addListener(async (tab) => {
   let currentHost = await getDomainForUrl(tab.url);
   const issuesPage = await getIssuesPage(currentHost);
   chrome.tabs.create({

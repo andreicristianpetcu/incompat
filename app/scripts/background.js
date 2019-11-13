@@ -76,6 +76,7 @@ async function refreshDataForDomain(domain, tabId) {
     tabId: tabId,
     text: data.closedIssuesCount.toString()
   });
+  chrome.browserAction.setBadgeBackgroundColor({color: "rgba(0, 0, 0, 0.2)"});
   chrome.browserAction.enable(tabId);
 }
 

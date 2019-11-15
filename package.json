@@ -8,6 +8,7 @@
     "build": "./node_modules/webextension-toolbox/bin/webextension-toolbox build -m firefox ; ./node_modules/webextension-toolbox/bin/webextension-toolbox build -m chrome"
   },
   "devDependencies": {
+    "web-ext": "latest",
     "webextension-toolbox": "latest"
   }
 }

@@ -42,11 +42,13 @@ async function getIssuesForSite(site) {
     const closedIssuesCount = await getIssues(site, 'closed');
     const siteData = {
       site,
-      openedIssuesCount: issues.issuesCount,
-      closedIssuesCount: closedIssuesCount.issuesCount,
+      openedIssuesCount: issues.issuesCount || 0,
+      closedIssuesCount: closedIssuesCount.issuesCount || 0,
       page: issues.issuesPage
     };
-    siteCache[site] = siteData;
+    if (issues.issuesCount !== undefined && closedIssuesCount.issuesCount !== undefined) {
+      siteCache[site] = siteData;
+    }
     return siteData;
   }
   return siteCache[site];
@@ -55,14 +57,11 @@ async function getIssuesForSite(site) {
 async function refreshDataForDomain(domain, tabId) {
   let minimalDomain = await getMinimalDomain(domain);
   const data = await getIssuesForSite(domain);
-  let icon = "images/icon-16.png";
   const issuesCount = data.openedIssuesCount;
-  if (issuesCount > 0) {
-    let issueCount = "infinity";
-    if (issuesCount <= 9) {
-      issueCount = issuesCount;
-    }
-    icon = `images/count/${issueCount}.png`;
+  if (issuesCount > 9) {
+    icon = `images/count/${infinity}.png`;
+  } else {
+    icon = `images/count/${issuesCount}.png`;
   }
   chrome.browserAction.setTitle({
     tabId: tabId,
@@ -76,7 +75,7 @@ async function refreshDataForDomain(domain, tabId) {
     tabId: tabId,
     text: data.closedIssuesCount.toString()
   });
-  chrome.browserAction.setBadgeBackgroundColor({color: "rgba(0, 0, 0, 0.2)"});
+  chrome.browserAction.setBadgeBackgroundColor({ color: "rgba(0, 0, 0, 0.4)" });
   chrome.browserAction.enable(tabId);
 }
 

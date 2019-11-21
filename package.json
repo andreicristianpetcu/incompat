@@ -1,6 +1,6 @@
 {
   "name": "incompat",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Incompat is a companion for Webcompat.com. It helps track compatibility bugs for sites that you build or use every day.",
   "scripts": {
     "dev": "./node_modules/webextension-toolbox/bin/webextension-toolbox dev firefox",
